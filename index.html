@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        #container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #expButton {
+            margin-bottom: 20px;
+            border-radius: 30px;
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+            background-color: #d9534f;
+            border: none;
+            cursor: pointer;
+        }
+        
+        #expButton:hover {
+            transform: scale(1.05);
+        }
+
+        #bomb {
+            width: 150px;
+            height: auto;
+            display: block;
+        }
+
+        #container p {
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+    </style>
+    <title>Bomb Timer</title>
+</head>
+<body>
+    <div id="container">
+        <button id="expButton">
+            <img src="img/aceso.jpg" id="bomb" alt="Bomb">
+        </button>
+        <p id="timer">Time Left: 60</p>
+    </div>
+
+    <h3>REFERENCING COUNTER STRIKE :)</h3>
+
+    <script>
+        const bomb = document.getElementById("expButton");
+        const bombImg = document.getElementById("bomb");
+        const timerString = document.getElementById("timer");
+
+        const bip = new Audio("./audio/bip.mp3");
+        const defused = new Audio("./audio/bombDefused.mp3");
+        const boom = new Audio("./audio/hq-explosion-6288.mp3");
+
+        let timer = 2;
+        const explosionHappen = setTimeout(() => {
+            bomb.src = "img/explodiu.png";
+        }, 60000);
+
+        const timerBomb = setInterval(() => {
+            timer--;
+            
+            timerString.innerText = `Time Left: ${timer}`;
+            
+            bip.play();
+
+            if (timer === 0) {
+                clearInterval(timerBomb);
+                timerString.innerText = "BOOM!";
+                bombImg.src = "img/explodiu.png";
+                bomb.removeEventListener("click", bombWasDefuse);
+                boom.play();
+            }
+        }, 1000);
+
+        bomb.addEventListener("click", bombWasDefuse);
+
+        function bombWasDefuse() {
+            clearTimeout(explosionHappen);
+            clearInterval(timerBomb);
+
+            bombImg.src = "img/apagado.png";
+            timerString.innerText = "Bomb has been defused";
+            defused.play();
+
+            bip.pause();
+            
+            bomb.removeEventListener("click", bombWasDefuse);
+        };
+    </script>
+</body>
+</html>
